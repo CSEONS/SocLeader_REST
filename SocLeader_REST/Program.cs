@@ -9,7 +9,7 @@ using SocLeader_REST.Domain.Repositories.Abstract;
 using SocLeader_REST.Domain.Repositories.EntityFramework;
 using SocLeader_REST.Services;
 using SocLeader_REST.Services.Interfaces;
-using SocLeader_REST.Services.Managers;
+using SocLeader_REST.Services.Preference;
 using System.Reflection;
 
 namespace SocLeader_REST
@@ -28,8 +28,12 @@ namespace SocLeader_REST
 
             builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
             builder.Services.AddScoped<IDatabaseService, DatabaseService>();
-            builder.Services.AddScoped<IGatheringRepository, EFGatheringRepository>();
-            builder.Services.AddScoped<GatheringManager>();
+            builder.Services.AddScoped<IPreferenceChanger, PreferenceChanger>();
+
+            builder.Services.AddScoped<IRepository<Gathering>, EFGatheringRepository>();
+            builder.Services.AddScoped<IRepository<Tag>, EFTagRepositroy>();
+
+            builder.Services.AddScoped<IEagerRepository<Gathering>, EFGatheringRepository>();
 
             builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -51,6 +55,7 @@ namespace SocLeader_REST
                     };
                 });
 
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
 

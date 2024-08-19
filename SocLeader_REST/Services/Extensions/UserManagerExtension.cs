@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using SocLeader_REST.Domain;
 using SocLeader_REST.Domain.Entities;
+using SocLeader_REST.Domain.Repositories.Abstract;
 using SocLeader_REST.Services.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
@@ -34,7 +37,8 @@ namespace SocLeader_REST.Services
                 user = new AppUser()
                 {
                     Id = Guid.NewGuid(),
-                    UserName = usernameGenerator.Generate()
+                    UserName = usernameGenerator.Generate(),
+                    Email = email,
                 };
 
                 var createUserResult = await userManager.CreateAsync(user);

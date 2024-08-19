@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SocLeader_REST.Domain.Entities;
 using SocLeader_REST.Domain.Repositories.Abstract;
 
 namespace SocLeader_REST.Domain.Repositories.EntityFramework
 {
-    public class EFGatheringRepository : IGatheringRepository
+    public class EFGatheringRepository : IRepository<Gathering>, IEagerRepository<Gathering>
     {
         private readonly ApplicationDbContext _context;
 
@@ -13,34 +14,63 @@ namespace SocLeader_REST.Domain.Repositories.EntityFramework
             _context = context;
         }
 
-        public async Task AddAsync(Gathering gathering)
-        {
-            await _context.Gatherings.AddAsync(gathering);
+        public void Add(Gathering entity)
+            {
+            _context.Add(entity);
         }
 
-        public void Delete(Gathering gathering)
+        public void Delete(Gathering entity)
         {
-            _context.Gatherings.Remove(gathering);
+            _context.Remove(entity);
         }
 
-        public IQueryable<Gathering> GetAll()
+        public bool Exist(Guid id)
         {
-            return _context.Gatherings;
+            return _context.Gatherings.FirstOrDefault(x => x.Id == id) is not null;
         }
 
-        public Gathering? GetById(Guid id)
+        public List<Gathering> GetAll()
         {
-            return _context.Gatherings.FirstOrDefault(g => g.Id == id);
+            return _context.Gatherings.ToList();
         }
 
-        public async Task SaveAsync()
+        public List<Gathering> GetAllEager()
         {
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public void Update(Gathering gathering)
+        public Gathering GetById(Guid id)
         {
-            _context.Gatherings.Update(gathering);
+            return _context.Gatherings.First(g => g.Id == id);
+        }
+
+        public Gathering GetByIdEager(Guid id)
+        {
+            return _context.Gatherings.Include(g => g.Tags).First(g => g.Id == id);
+        }
+
+        public void SaveChanges()
+        {
+            _context.SaveChanges();
+        }
+
+        public bool TryGetById(Guid id, out Gathering entity)
+        {
+            if (Exist(id))
+            {
+                entity = GetById(id);
+                return true;
+            }
+            else
+            {
+                entity = Gathering.Empty;
+                return false;
+            }
+        }
+
+        public void Update(Gathering entity)
+        {
+            _context.Gatherings.Update(entity);
         }
     }
 }

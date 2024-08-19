@@ -1,7 +1,8 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SocLeader_REST.MediatR.User.Account.SignIn;
-using SocLeader_REST.MediatR.User.Account.SignUp;
+using SocLeader_REST.MediatR.User.Accounts.SignIn;
+using SocLeader_REST.MediatR.User.Accounts.SignUp;
 
 namespace SocLeader_REST.Areas.User
 {
